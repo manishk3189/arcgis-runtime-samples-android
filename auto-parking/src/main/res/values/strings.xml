@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Auto parking</string>
+    <string name="esri_parking_service_url">https://services6.arcgis.com/it9JQBuyF0VsUnw3/ArcGIS/rest/services/Esri_Parking_Auto/FeatureServer/0</string>
+    <string name="feature_map">https://www.arcgis.com/home/webmap/viewer.html?webmap=c9f1658ee3234f4b906baca56d26c492</string>
+
+    <!-- arcgis online portal url -->
+    <string name="portal_url">http://www.arcgis.com/</string>
+    <string name="parking_map">c9f1658ee3234f4b906baca56d26c492</string>
+    <string name="parking_drive_time">180bcf7b0e45452caa72dcc2505c14cc</string>
+    <!--<string name="parking_drive_time_service_url">https://services6.arcgis.com/it9JQBuyF0VsUnw3/arcgis/rest/services/Travel%20from%20Esri%20Parking%20Auto%20(5%20Minutes)/FeatureServer/0</string>-->
+</resources>
