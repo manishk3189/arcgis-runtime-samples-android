@@ -7,5 +7,16 @@
     <string name="portal_url">http://www.arcgis.com/</string>
     <string name="parking_map">c9f1658ee3234f4b906baca56d26c492</string>
     <string name="parking_drive_time">180bcf7b0e45452caa72dcc2505c14cc</string>
+    <string name="location_permission_denied">Location permission denied</string>
+    <string name="location_enable_message">Do you want to enable Location</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="hint">Search</string>
+    <string name="speech_prompt">Say Something</string>
+    <string name="speech_not_supported">speech to text doesn\'t seems supported</string>
+    <string name="menu.clear">clear</string>
+    <string name="menu.tts">text to speech</string>
+    <string name="menu.toggle.icon">Icon Visible</string>
+    <string name="menu.icon.type">Icon Type</string>
     <!--<string name="parking_drive_time_service_url">https://services6.arcgis.com/it9JQBuyF0VsUnw3/arcgis/rest/services/Travel%20from%20Esri%20Parking%20Auto%20(5%20Minutes)/FeatureServer/0</string>-->
 </resources>

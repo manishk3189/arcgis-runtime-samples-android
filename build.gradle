@@ -15,6 +15,7 @@ allprojects {
         jcenter()
         maven{
             url 'http://android:8080/artifactory/arcgis'
+            maven { url "https://jitpack.io" }
         }
     }
     var
