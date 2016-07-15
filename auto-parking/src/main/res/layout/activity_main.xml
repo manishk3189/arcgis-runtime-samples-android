@@ -35,6 +35,7 @@
         android:paddingLeft="8dp"
         android:background="#90000000"
         android:hint="@string/hint"
-        app:fsv_menu="@menu/menu_main"/>
+        app:fsv_menu="@menu/menu_main"
+        app:theme="@style/CustomFloatingSearchViewTheme"/>
 
 </RelativeLayout>

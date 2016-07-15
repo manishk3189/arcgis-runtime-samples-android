@@ -1,6 +1,7 @@
 package com.esri.arcgisruntime.sample.auto_parking;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,12 +10,19 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.Toast;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
@@ -33,6 +41,13 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.portal.Portal;
 import com.esri.arcgisruntime.portal.PortalItem;
 
+import com.esri.arcgisruntime.sample.BaseItemAnimator;
+import com.mypopsy.drawable.ToggleDrawable;
+import com.mypopsy.drawable.model.CrossModel;
+import com.mypopsy.drawable.util.Bezier;
+import com.mypopsy.widget.FloatingSearchView;
+import com.mypopsy.widget.internal.ViewUtils;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
     private LocationDisplay mLocationDisplay;
     FloatingActionButton mLocationFAB;
     private AlertDialog.Builder builder;
+
+
+    private static final int REQ_CODE_SPEECH_INPUT = 42;
+
+    private FloatingSearchView mSearchView;
+    //private SearchAdapter mAdapter;
+
 
 
     @Override
@@ -86,6 +108,11 @@ public class MainActivity extends AppCompatActivity {
 
         // set the map to be displayed in the mapview
         mMapView.setMap(mMap);
+
+        mSearchView = (FloatingSearchView) findViewById(R.id.search);
+
+        mSearchView.showLogo(true);
+        //mSearchView.setItemAnimator(new CustomSuggestionItemAnimator(mSearchView));
 
 
 
@@ -221,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.MyAlertDialogStyle);
         builder.setMessage("Please enable your GPS before proceeding")
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -231,6 +258,68 @@ public class MainActivity extends AppCompatActivity {
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private static class CustomSuggestionItemAnimator extends BaseItemAnimator {
+
+        private final static Interpolator INTERPOLATOR_ADD = new DecelerateInterpolator(3f);
+        private final static Interpolator INTERPOLATOR_REMOVE = new AccelerateInterpolator(3f);
+
+        private final FloatingSearchView mSearchView;
+
+        public CustomSuggestionItemAnimator(FloatingSearchView searchView) {
+            mSearchView = searchView;
+            setAddDuration(150);
+            setRemoveDuration(150);
+        }
+
+        @Override
+        protected void preAnimateAdd(RecyclerView.ViewHolder holder) {
+            if(!mSearchView.isActivated()) return;
+            ViewCompat.setTranslationX(holder.itemView, 0);
+            ViewCompat.setTranslationY(holder.itemView, -holder.itemView.getHeight());
+            ViewCompat.setAlpha(holder.itemView, 0);
+        }
+
+        @Override
+        protected ViewPropertyAnimatorCompat onAnimateAdd(RecyclerView.ViewHolder holder) {
+            if(!mSearchView.isActivated()) return null;
+            return ViewCompat.animate(holder.itemView)
+                    .translationY(0)
+                    .alpha(1)
+                    .setStartDelay((getAddDuration() / 2) * holder.getLayoutPosition())
+                    .setInterpolator(INTERPOLATOR_ADD);
+        }
+
+        @Override
+        public boolean animateMove(RecyclerView.ViewHolder holder, int fromX, int fromY, int toX, int toY) {
+            dispatchMoveFinished(holder);
+            return false;
+        }
+
+        @Override
+        protected ViewPropertyAnimatorCompat onAnimateRemove(RecyclerView.ViewHolder holder) {
+            return ViewCompat.animate(holder.itemView)
+                    .alpha(0)
+                    .setStartDelay(0)
+                    .setInterpolator(INTERPOLATOR_REMOVE);
+        }
+    }
+
+    private static class CustomDrawable extends ToggleDrawable {
+
+        public CustomDrawable(Context context) {
+            super(context);
+            float radius = ViewUtils.dpToPx(9);
+
+            CrossModel cross = new CrossModel(radius*2);
+
+            // From circle to cross
+            add(Bezier.quadrant(radius, 0), cross.downLine);
+            add(Bezier.quadrant(radius, 90), cross.upLine);
+            add(Bezier.quadrant(radius, 180), cross.upLine);
+            add(Bezier.quadrant(radius, 270), cross.downLine);
+        }
     }
 
 }
